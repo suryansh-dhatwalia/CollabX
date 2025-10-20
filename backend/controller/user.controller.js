@@ -1,0 +1,49 @@
+import * as userService from "../services/user.service.js";
+import { validationResult } from "express-validator";
+import User from "../model/userModel.js";
+
+export const createUserController = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const user = await userService.createUser(req.body);
+    const token = user.generateJWT();
+    res.status(201).json({ user, token });
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+};
+
+export const loginController = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    let { email, password } = req.body;
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      res.status(401).json({
+        errors: "Invalid Credentials",
+      });
+    }
+    const isMatch = await user.isValidPassword(password);
+    if(!isMatch){
+        return res.status(401).json({errors:"Invalid Password"})
+    }
+    const token = await user.generateJWT();
+    res.status(200).json({user,token})
+
+
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+};
+
+export const profileController = async(req,res) =>{
+    res.status(200).json({
+        user:req.user
+    })
+}
