@@ -11,11 +11,18 @@ const registerRules = () => {
     body("password")
       .isLength({ min: 3 })
       .withMessage("Password must be at least 3 characters long"),
+    body("firstname")
+      .notEmpty()
+      .withMessage("First name is required"),
+    body("lastname")
+      .notEmpty()
+      .withMessage("Last name is required"),
   ];
 };
 
 router.post("/register", registerRules(), userController.createUserController);
 router.post("/login",registerRules(), userController.loginController);
 router.get("/profile",authMiddleWare,userController.profileController);
+router.get('/logout',authMiddleWare,userController.logOutController);
 
 export default router;

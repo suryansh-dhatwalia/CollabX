@@ -1,6 +1,6 @@
 import userModel from "../model/userModel.js";
 
-export const createUser = async ({ email, password }) => {
+export const createUser = async ({ firstname,lastname,email, password }) => {
   if (!email || !password) {
     throw new Error("Email and password not found");
   }
@@ -8,6 +8,8 @@ export const createUser = async ({ email, password }) => {
   const hashPassword = await userModel.hashPassword(password);
 
   const user = await userModel.create({
+    firstname,
+    lastname,
     email,
     password: hashPassword,
   });

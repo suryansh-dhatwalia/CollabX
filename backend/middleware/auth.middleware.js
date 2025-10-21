@@ -1,22 +1,28 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import redisClient from "../services/redis.service.js";
 
-export const authMiddleWare = (req, res , next)=>{
-    const authHeader = req.cookies.token || req.headers.authorization;
+export const authMiddleWare = async (req, res, next) => {
+  try {
+    const token = req.cookies.token || req.headers.authorization.split(" ")[1];
 
-    if(!authHeader || !authHeader.startsWith('Bearer ')){
-        
-        return res.status(401).json({message:"Authorization Denied , No Token"})
-        
+    if (!token) {
+      return res.status(401).send({ error: "Unauthorized User" });
     }
-    try{
-        const token = authHeader.split(' ')[1];
-        let decoded = jwt.verify(token,process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
+
+    const isBlackListed = await redisClient.get(token);
+
+    if (isBlackListed) {
+      res.cookie("token", "");
+
+      return res.status(401).send({ error: "Unauthorized User" });
     }
-    catch(err){
-        console.log(err)
-       return res.status(401).json({message:'Token not available'})
-    }
-    
-}
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.log(error);
+
+    res.status(401).send({ error: "Unauthorized User" });
+  }
+};
