@@ -1,10 +1,12 @@
 "use client";
-import React , {useState } from "react";
+import React , {useState , useContext } from "react";
 import { Label } from "./label.jsx";
 import { Input } from "./input.jsx";
 import { cn } from "../../lib/utils.js";
 import axios from "../../config/axios.js";
 import { useNavigate , Link } from "react-router-dom";
+import { UserContext } from "../../context/user.context.jsx";
+
 import {
   IconBrandGithub,
   IconBrandGoogle,
@@ -15,12 +17,16 @@ export function LoginFormDemo() {
       const navigate = useNavigate();
       const [email,setEmail] = useState("");
       const[password,setPassword] = useState("");
+      const { setUser } = useContext(UserContext);
   const handleSubmit = (e) => {
-    axios.post('/login',{
+    e.preventDefault();
+    axios.post('/users/login',{
       email,
       password
     }).then((res)=>{
-      navigate('/users/login')
+      localStorage.setItem('token',res.data.token)
+      setUser(res.data.user);
+      navigate('/home')
     })
     .catch((err)=>{
       console.log(err.response.data);

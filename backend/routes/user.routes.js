@@ -19,10 +19,16 @@ const registerRules = () => {
       .withMessage("Last name is required"),
   ];
 };
+const loginRules = () => {
+  return [
+    body("email").isEmail().withMessage("Please provide a valid email address"),
+    body("password").notEmpty().withMessage("Password is required"),
+  ];
+};
 
 router.post("/register", registerRules(), userController.createUserController);
-router.post("/login",registerRules(), userController.loginController);
+router.post("/login",loginRules(), userController.loginController);
 router.get("/profile",authMiddleWare,userController.profileController);
 router.get('/logout',authMiddleWare,userController.logOutController);
-
+router.get("/getall",authMiddleWare,userController.getAllUsers);
 export default router;

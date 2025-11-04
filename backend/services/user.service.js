@@ -15,3 +15,13 @@ export const createUser = async ({ firstname,lastname,email, password }) => {
   });
   return user;
 };
+
+
+
+export const getAllUsers = async ({ userId }) => {
+  
+  const allUsers = await userModel.find({
+    _id: { $ne: userId }
+  });
+  return allUsers;
+};

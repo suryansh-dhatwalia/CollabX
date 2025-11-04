@@ -1,10 +1,11 @@
 "use client";
-import React , {useState } from "react";
+import React , {useState ,useContext} from "react";
 import { Label } from "./label.jsx";
 import { Input } from "./input.jsx";
 import { cn } from "../../lib/utils.js";
 import { useNavigate ,Link } from "react-router-dom";
 import axios from "../../config/axios.js";
+import { UserContext } from "../../context/user.context.jsx";
 
 import {
   IconBrandGithub,
@@ -19,6 +20,7 @@ export function SignupFormDemo() {
     const [lastname,setLastName] = useState("");
     const [email,setEmail] = useState("");
     const[password,setPassword] = useState("");
+    const { setUser } = useContext(UserContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,15 +30,14 @@ export function SignupFormDemo() {
         email,
         password
     }).then((res)=>{
-        navigate('/');
+        localStorage.setItem('token',res.data.token);
+        setUser(res.data.user);
+        navigate('/home');
     })
     .catch((err)=>{
-        console.log(err.response.data);
+        console.log(err.response.data)
     })
-
-    
-    
-    
+ 
   };
 
 

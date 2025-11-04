@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.js";
 import { motion, stagger, useAnimate, useInView } from "motion/react";
 import { useEffect } from "react";
 
@@ -91,7 +91,7 @@ export const TypewriterEffectSmooth = ({
   className,
   cursorClassName,
 }) => {
-  // split text inside of words into array of characters
+  
   const wordsArray = words.map((word) => {
     return {
       ...word,
