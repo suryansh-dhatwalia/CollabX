@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useId, useContext } from "react";
+import React, { useEffect, useState,useRef ,useId, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "../../hooks/use-outside-click.js";
 import axios from "../../config/axios.js";
 import { UserContext } from "../../context/user.context.jsx";
 
-export function ExpandableCardDemo({ refresh }) {
+
+export function ExpandableCardDemo({refresh}) {
   const [active, setActive] = useState(null);
   const [cards, setCards] = useState([]);
   const ref = useRef(null);
@@ -17,7 +18,7 @@ export function ExpandableCardDemo({ refresh }) {
     const fetchData = async () => {
       try {
         const { data } = await axios.get("/project/all");
-        console.log(data);
+        console.log(data)
         const newData = data.projects.allProjects;
         const mapped = newData.map((project) => ({
           id: project._id,
@@ -26,24 +27,27 @@ export function ExpandableCardDemo({ refresh }) {
             project.image ||
             "https://www.shutterstock.com/image-photo/project-word-written-wooden-cube-260nw-525452626.jpg",
           ctaText: "Open Project",
-          ctaLink: `/project/${project._id}`,
+          ctaLink: `/projects/${project._id}`,
           content:
             project.users?.map((user) => ({
               id: user._id,
               name: `${user.firstname || ""} ${user.lastname || ""}`,
             })) || [],
+          
         }));
+       
 
         setCards(mapped);
+         
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
     };
 
     fetchData();
-  }, [refresh, user]);
+  }, [refresh,user]);
 
-  useOutsideClick(ref, () => setActive(null));
+    useOutsideClick(ref, () => setActive(null));
 
   return (
     <>
@@ -53,7 +57,7 @@ export function ExpandableCardDemo({ refresh }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 h-full w-full z-90"
+            className="fixed inset-0 bg-black/20  backdrop-blur-md h-full w-full z-90"
           />
         )}
       </AnimatePresence>
@@ -121,36 +125,35 @@ export function ExpandableCardDemo({ refresh }) {
                   </motion.a>
                 </div>
                 <div className="pt-4 relative px-4">
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
-                  >
-                    {Array.isArray(active.content) &&
-                    active.content.length > 0 ? (
-                      active.content.map((user) => (
-                        <div key={user.id} className="flex items-center gap-2">
-                          👤 <span>{user.name}</span>
-                        </div>
-                      ))
-                    ) : (
-                      <p>No collaborators</p>
-                    )}
-                  </motion.div>
-                </div>
+  <motion.div
+    layout
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+  >
+    {Array.isArray(active.content) && active.content.length > 0 ? (
+      active.content.map((user) => (
+        <div key={user.id} className="flex items-center gap-2">
+          👤 <span>{user.name}</span>
+        </div>
+      ))
+    ) : (
+      <p>No collaborators</p>
+    )}
+  </motion.div>
+</div>
               </div>
             </motion.div>
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto my-14 w-full gap-4 gap-x-25 relative z-10 px-4">
+<ul className="grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto my-14 w-full gap-4 gap-x-25 relative z-10 px-4">
         {cards.map((card, index) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}
             key={`card-${card.id}-${id}`}
-            onClick={() => setActive({ ...card })}
+            onClick={() => setActive({...card})}
             className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
             <div className="flex gap-4 flex-col md:flex-row ">
@@ -223,3 +226,4 @@ export const CloseIcon = () => {
     </motion.svg>
   );
 };
+

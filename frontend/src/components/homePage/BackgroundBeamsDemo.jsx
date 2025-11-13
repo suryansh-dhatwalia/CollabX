@@ -31,7 +31,7 @@ export function BackgroundBeamsDemo() {
   return (
     
     <div className="min-h-screen w-full bg-neutral-950 relative antialiased">
-      <BackgroundBeams />
+      
       <NavBar 
       showModal={showModal}
         setShowModal={setShowModal}

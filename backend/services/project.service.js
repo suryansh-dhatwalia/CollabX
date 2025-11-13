@@ -105,7 +105,7 @@ export const addUsersToProject = async ({ projectId, users, userId }) => {
 
 
 
-export const showProject = async({ projectId }) =>{
+export const showProject = async({ projectId , userId }) =>{
   console.log(projectId);
   if(!projectId){
     throw new Error("No Project Found")
@@ -113,9 +113,24 @@ export const showProject = async({ projectId }) =>{
   if(!mongoose.Types.ObjectId.isValid(projectId)){
     throw new Error("Invalid ProjectId")
   }
+  if(!userId){
+    throw new Error("No User Found")
+  }
     const project = await projectModel.findOne({
         _id:projectId
     })
-    return project;
+    const userArray = await userModel.find({
+      _id:userId
+    }).select('firstname lastname');
+    console.log(userArray);
+    
+    if (!userArray || userArray.length === 0) {
+    return res.status(404).json({ msg: 'User not found' });
+  }
+
+  
+  
+  
+  return {project,userArray};
 }
 

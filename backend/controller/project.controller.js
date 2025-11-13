@@ -78,10 +78,13 @@ export const addUserToProject = async (req, res) => {
 
 export const getProject = async(req,res)=>{
     const{ projectId } = req.params;
+    const userId  = req.user.id;
+
+
 
     try{
 
-      const project = await showProject({projectId});
+      const project = await showProject({projectId,userId});
       res.status(200).json({project});
     }
     catch(err){

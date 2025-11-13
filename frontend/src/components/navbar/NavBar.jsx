@@ -3,6 +3,7 @@ import React, { useState, useContext } from "react";
 import { Menu, X } from "lucide-react";
 import { UserContext } from "../../context/user.context";
 import axios from "../../config/axios.js";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ onProjectCreated }) { // ✅ receive callback
 
@@ -14,6 +15,7 @@ export default function Navbar({ onProjectCreated }) { // ✅ receive callback
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleUserExpand = () => setIsUserExpanded(!isUserExpanded);
+  const navigate = useNavigate();
 
   function createProject(e) {
     e.preventDefault();
@@ -29,9 +31,20 @@ export default function Navbar({ onProjectCreated }) { // ✅ receive callback
         console.log(err);
       });
   }
+  async function logOut(){
+    try{
+      await axios.get("/users/logout")
+      navigate("/")
+    }
+    catch(err){
+      console.log(err);
+    }
+    
+
+  }
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#131313] border-b border-gray-700">
+    <nav className="sticky top-0 z-50 bg-[#131313] border-b border-blue-500">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
@@ -52,12 +65,10 @@ export default function Navbar({ onProjectCreated }) { // ✅ receive callback
 
           {/* Center logo */}
           <div className="absolute left-16 top-1/2 -translate-y-1/2 md:left-1/2 md:-translate-x-1/2">
-            <h1 className="text-l sm:text-2xl font-bold text-blue-500">
+            <h1 className="text-l sm:text-3xl font-bold text-blue-500">
               CollabX
             </h1>
           </div>
-
-          {/* Right user section */}
           <div className="flex items-center gap-4 ml-auto">
             <div
               className={`flex items-center gap-3 transition-all duration-300 ease-out ${
@@ -84,7 +95,7 @@ export default function Navbar({ onProjectCreated }) { // ✅ receive callback
             {isUserExpanded && (
               <div className="animate-in fade-in duration-300">
                 <button
-                  onClick={() => setIsUserExpanded(false)}
+                  onClick={logOut}
                   className="px-3 py-1.5 text-xs text-white border border-gray-600 rounded-md hover:bg-gray-800 transition-colors duration-200"
                 >
                   Logout

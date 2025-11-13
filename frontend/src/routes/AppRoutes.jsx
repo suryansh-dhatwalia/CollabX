@@ -16,7 +16,7 @@ export default function AppRoutes() {
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<SignUpPage />} />
-          <Route path="/project/:projectId" element={<Project />} />
+          <Route path="/projects/:projectId" element={<Project />} />
         </Routes>
       </BrowserRouter>
     </>
